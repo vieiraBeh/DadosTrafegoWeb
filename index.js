@@ -1,14 +1,18 @@
 function analyzeData() {
+    // Entrada de dados (dataInput)
     const input = document.getElementById('dataInput').value;
     const visits = input.split(',').map(Number).filter(n => !isNaN(n));
 
+    // Validação
     if (visits.length === 0) {
         alert('Por favor, insira dados válidos.');
         return;
     }
 
+    // Cálculo da Média
     const mean = (visits.reduce((a, b) => a + b, 0) / visits.length).toFixed(2);
-rdg
+
+    // Cálculo da Moda
     const frequency = {};
     visits.forEach(num => {
         frequency[num] = (frequency[num] || 0) + 1;
@@ -17,31 +21,35 @@ rdg
         frequency[a] > frequency[b] ? a : b
     );
 
+    // Cálculo da Mediana
     const sorted = [...visits].sort((a, b) => a - b);
     const median = sorted.length % 2 === 0
         ? ((sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2).toFixed(2)
         : sorted[Math.floor(sorted.length / 2)];
 
+    // Exibição dos Resultados
     document.getElementById('results').innerHTML = `
         <strong>Média:</strong> ${mean}<br>
         <strong>Moda:</strong> ${mode}<br>
         <strong>Mediana:</strong> ${median}
     `;
 
+    // Renderização do Gráfico
     renderBoxplot(visits);
-    renderSankey(visits);
 }
 
 function renderBoxplot(data) {
     const ctx = document.getElementById('boxplot').getContext('2d');
     const sorted = data.sort((a, b) => a - b);
 
+    // Cálculo dos valores do Boxplot
     const q1 = sorted[Math.floor((sorted.length / 4))];
     const q3 = sorted[Math.ceil((sorted.length * (3 / 4))) - 1];
     const median = sorted[Math.floor(sorted.length / 2)];
     const min = Math.min(...data);
     const max = Math.max(...data);
 
+    // Renderização do Gráfico
     new Chart(ctx, {
         type: 'boxplot',
         data: {
@@ -64,61 +72,4 @@ function renderBoxplot(data) {
             responsive: true
         }
     });
-}
-
-function renderSankey(data) {
-    const sankeyData = {
-        nodes: data.map((_, i) => ({ name: `Dia ${i + 1}` })),
-        links: data.map((value, i) => ({
-            source: 0,
-            target: i + 1,
-            value: value
-        }))
-    };
-
-    const svg = d3.select("#sankey").html('').append("svg")
-        .attr("width", 800)
-        .attr("height", 400);
-
-    const sankeyGenerator = d3.sankey()
-        .nodeWidth(20)
-        .nodePadding(10)
-        .extent([[1, 1], [798, 398]]);
-
-    const graph = sankeyGenerator({
-        nodes: sankeyData.nodes.map(d => Object.assign({}, d)),
-        links: sankeyData.links.map(d => Object.assign({}, d))
-    });
-
-    svg.append("g")
-        .selectAll(".link")
-        .data(graph.links)
-        .enter()
-        .append("path")
-        .attr("class", "link")
-        .attr("d", d3.sankeyLinkHorizontal())
-        .style("stroke-width", d => Math.max(1, d.width))
-        .style("stroke", "#4CAF50")
-        .style("fill", "none");
-
-    const node = svg.append("g")
-        .selectAll(".node")
-        .data(graph.nodes)
-        .enter()
-        .append("g");
-
-    node.append("rect")
-        .attr("x", d => d.x0)
-        .attr("y", d => d.y0)
-        .attr("height", d => d.y1 - d.y0)
-        .attr("width", sankeyGenerator.nodeWidth())
-        .style("fill", "#388E3C")
-        .style("stroke", "#000");
-
-    node.append("text")
-        .attr("x", d => d.x0 - 6)
-        .attr("y", d => (d.y0 + d.y1) / 2)
-        .attr("dy", "0.35em")
-        .attr("text-anchor", "end")
-        .text(d => d.name);
 }
