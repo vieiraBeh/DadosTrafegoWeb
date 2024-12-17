@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Dados de Tráfego</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+
+    <!---Cabeçalho-->
+    <header>
+        <div class="logo"> Análise de Dados de Tráfego em WebSites</div>
+        <nav>
+            <a href="#input-section">Entrada</a>
+            <a href="#boxplot">Gráfico Boxplot</a>
+            <a href="#sankey">Gráfico Sankey</a>
+        </nav>
+    </header>
+
+    <!--Dados-->
+    <main class="container">
+        <section id="input-section" class="card">
+            <h2>Insira os Dados de Tráfego</h2>
+            <textarea id="dataInput" rows="5" placeholder="Exemplo: 100, 200, 300, 400..."></textarea>
+            <button onclick="analyzeData()">Analisar</button>
+            <p id="results"></p>
+        </section>
+
+        <!--Gráfico-->
+        <section id="visualizations">
+            <div class="chart-container card">
+                <h3>Gráfico Boxplot</h3>
+                <canvas id="boxplot"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!--Rodapé-->
+    <footer>
+        <p>&copy; 2024. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
